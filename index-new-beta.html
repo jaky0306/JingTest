@@ -1,0 +1,364 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<link type="text/css" rel="stylesheet" href="UI.css">
+<script type="text/javascript" src="jquery.js"></script>
+<style type="text/css" >
+	#box_container{
+		background-color:#1E88C1;
+		width:230px !important;
+		color: #FFF;
+		font-size:15px;
+		font-weight:bold;
+		border: thin dotted #FF99CC ;
+		font-family: Tahoma, Geneva, sans-serif;
+		border-radius:7px 7px 7px 7px;
+	}
+	#box_show,#box_ctrl,#box_tips{
+		margin:5px 5px 5px 5px;
+		text-align:center;
+		border-radius: 3px 3px 3px 3px;
+	}
+	#box_tips{
+		border:medium  dashed #fff;	
+		padding-left:3px;
+		padding-right:3px;
+		background-color:#47C9E9 ;
+		
+	}
+	#box_show{
+		background-color: #47C9E9;
+		overflow:auto;
+		font-weight:600;
+		/*height:430px;*/
+		padding-bottom: 25px;
+
+	}
+	.box_show_animate{
+		display:none;
+	}
+	#box_ctrl{
+		background-color:#CCC;
+		padding-top:15px;
+		padding-bottom:5px;
+		line-height:2;
+	}
+	.img_ctrl{
+		position:relative;
+		left:-60px;
+		top:10px;
+	}
+	.setf{
+		color: #333;
+		font-family:"Times New Roman", Times, serif;
+		font-size:16px;
+		position:relative;
+		left:-55px;
+		top:5px;
+	}
+	.img_ctrl_user{
+		position:relative;
+		right:-50px;
+		top:10px;
+		width:32px;
+		height:32px;
+	}
+	.setf_user{
+		color: #333;
+		font-family:"Times New Roman", Times, serif;
+		font-size:16px;
+		position:relative;
+		right:-55px;
+		top:5px;
+	}
+	.msg_time{
+		font-size:10px;
+		font-family:Verdana, Geneva, sans-serif;		
+	}
+	#box_show p{
+		padding-right:5px;
+	}
+	#box_show p.message{
+		padding-right:0px;
+		padding: 3px 3px 5px 3px;
+		margin: 1px 15px 1px 15px;
+		background-color: #0D74B9;
+		border-radius:10px 10px 10px 10px;
+	}
+	#input_msg{
+		border-radius: 4px 4px 4px 4px;
+		width:190px;
+		color:#CCC;
+		font-family:"Microsoft YaHei UI", "幼圆", "Century Gothic";
+	}
+	
+	#option_container{
+		background-color:#6BD614;
+		border-radius: 5px 5px ;
+		margin-top: 10px;
+		width:330px;
+		color: #FFF;
+		font-size:14px;
+		font-weight:bold;
+		font-family: Tahoma, Geneva, sans-serif;
+		padding-top:5px;
+		position:relative;
+		top:-220px;
+		left:240px;
+	}
+	#option_container input[type=text]{
+		font-family:"Microsoft YaHei UI", "幼圆", "Century Gothic";
+		border-radius: 4px 4px 4px 4px;
+	}
+			
+</style>
+</head>
+
+<body>
+<div id="box_container">
+
+<div id="box_tips">
+<p>This is a new showpad where you can write your minds down so that you can talk with me .</p>
+</div>
+
+<div id="box_show">
+<p><img src="1.png" class="img_ctrl"><span class="setf">Says :  </span></p>
+<p class="message">hello,welcome to my page <span class="msg_time"> @4/1/13 17:00</span></p>
+<p><img src="1.png" class="img_ctrl"><span class="setf">Says : </span></p>
+<p class="message" >Now,you can talk with me here <span class="msg_time"> @4/1/13 17:05</span></p>
+</div>
+
+<div id="box_ctrl">
+<form>
+<input type="text" value="Write your minds down here" id="input_msg"  \><br>
+<input type="button" value="Submit" id="submit_msg" onClick="submitMsg()" class="btn btn-success" \>
+<input type="button" value="Option" id="set_option" onClick="showOption()" class="btn btn-success" \>
+</form>
+</div>
+
+</div><!--box_container end-->
+
+<div id="option_container" style="display: none">
+<form id="form_ctrl" >
+	<table id="table_ctrl">
+		<tr><td>Name :</td><td><input type="text" name="name"></td></tr>
+		<tr><td>E-mail :</td><td><input type="text" name="mail"></td></tr>
+		<tr><td>Font Color : </td>
+			<td style="text-align:center">White<input type="radio" value="white" name="font_color" checked="checked">Pink<input type="radio" value="pink" name="font_color"> Gray<input type="radio" value="#CCCCCC" name="font_color">
+        	</td></tr>
+		<tr><td>Remember:</td>
+		<td>
+            <select name="choose">
+            <option value="1">One Day</option>
+            <option value="7">One Week</option>
+            <option value="30">One Month</option>
+            <option value="-1">Forget It</option>
+            </select>
+		</tr>
+		<tr>
+            <td colspan="2" style="text-align:center">
+                <input type="button" onClick="setting(this.form)" value="Setting And Save" class="btn btn-warning">
+                <input type="button" onClick="cleanUserMsg()" value="Clean Messages" class="btn btn-danger" >
+            </td>
+        </tr>
+	</table>
+</form>
+</div><!--option_container end-->
+
+
+<script type="text/javascript">
+
+	//window.onload = getCookie;
+	document.getElementById("input_msg").onfocus = dealDefaultTxt;
+	document.onkeypress= listenKeyEnter;	
+	var listenKeyEnter = function(){
+		if(event.keyCode ==108||event.keyCode == 13){
+			submitMsg();
+			return false;
+		}
+	};
+
+	var boxNamespace = {};
+	boxNamespace.fragment = document.createDocumentFragment();
+	boxNamespace.firstTime = 0; //用于初始化判断
+ 
+	function submitMsg(){
+		var userMsg = document.getElementById("input_msg").value;
+		var reg = /^\s*$/g;
+		if(userMsg==""||reg.test(userMsg)){
+			return alert("Please don't be void !");
+		}
+		if(boxNamespace.firstTime==0){
+			return alert("Please write your owe words down !");
+		}
+		
+		var cheakOverflow = function(){ //用于简单判断非中文溢出处理
+			var reg = /\w{16,}/g; 
+			if(reg.test(userMsg)){
+				var temp=userMsg.split("");
+				var i,count=0;
+				for(i=16;i<temp.length;i+=count*16){
+					if(temp[i]!=null||temp[i]!="undefined"){
+						temp[i]=temp[i]+" ";
+						count++;
+					}
+					else break;
+				}
+				userMsg=temp.join("");
+			}
+		}
+		cheakOverflow();
+		
+		var newMsg = document.createElement("p");
+		newMsg.innerHTML = userMsg;
+		//var userMsgNode = document.createTextNode(userMsg);
+		//newMsg.appendChild(userMsgNode);
+		newMsg.className = "message box_show_animate";
+		//留言细节
+		var msgTime = document.createElement("span");
+		msgTime.className = "msg_time";
+		msgTime.innerHTML = getMsgTime();
+		//var msgTimeTxt= getMsgTime();
+		//var msgTimeNode = document.createTextNode(msgTimeTxt);
+		//msgTime.appendChild(msgTimeNode);
+		newMsg.appendChild(msgTime);
+		//时间细节
+		addToHTML(newMsg);
+		dealDefaultTxt("finished");
+	}
+
+	function addToHTML(obj){
+		var newImg = document.createElement("img");
+		newImg.className = "img_ctrl_user";
+		newImg.src = "2.png";
+		//头像细节
+		var newSpan = document.createElement("span");
+		newSpan.className = "setf_user";
+		newSpan.innerHTML = "Says :";
+		//介绍细节
+		var litBox = document.createElement("p");//包括头像和介绍
+		litBox.appendChild(newImg);
+		litBox.appendChild(newSpan);
+		//封装细节
+		var box_show = document.getElementById("box_show");
+		boxNamespace.fragment.appendChild(litBox);
+		boxNamespace.fragment.appendChild(obj);
+		box_show.appendChild(boxNamespace.fragment);
+		$(".message").show(500);
+		//box_show.appendChild(litBox);
+		//box_show.appendChild(obj);
+		//添加到网页
+	}
+	
+	function getMsgTime(){  
+		var time = new Date();
+		return time.showTime();
+	}
+	
+	Date.prototype.showTime= function(){	//时间显示处理函数
+		with(this){
+			var aTime={
+				 date:getDate(),
+				 month: getMonth(),
+				 year : function(){
+					 var temp="";
+					 temp+=getFullYear();
+					 temp=temp.substring(2);
+					 return temp;
+				 },
+				 minutes: function(){
+					var temp=""
+					temp=getMinutes();
+					if(temp<10) temp="0"+temp;
+					return temp;
+				 },
+				 hours: getHours()
+			}
+		}
+		var currTime = (aTime.month+1)+"/"+
+		aTime.date+"/"+aTime.year()+" "+aTime.hours+":"+aTime.minutes();
+		return " @"+currTime;	
+	}
+
+	function dealDefaultTxt(method){ 
+		var defaultTxt = "Write your minds down here";
+		boxNamespace.firstTime++;
+		if(boxNamespace.firstTime==1&&document.getElementById("input_msg").value==defaultTxt){
+			document.getElementById("input_msg").value ="";
+			document.getElementById("input_msg").style.color = "#000";
+		}
+		else document.getElementById("input_msg").style.color = "#000"; //刷新网页时点击输入框以激活态
+		if(method=="finished"){
+			document.getElementById("input_msg").value ="";
+		}
+		document.onkeypress = listenKeyEnter;//监听获得焦点时按下回车键
+	}
+	
+	boxNamespace.trigger = 1;
+	function showOption(){ //option按钮的显示切换
+		boxNamespace.trigger++;
+		if(boxNamespace.trigger%2==0){
+			$("#option_container").slideDown(300);
+			//document.getElementById("option_container").style.display = "";
+		}
+		else { //document.getElementById("option_container").style.display = "none";
+			$("#option_container").slideUp(300);
+		}
+	}
+		
+	function cleanUserMsg(){
+		$("#box_show p:gt(3)").hide(500);
+		setTimeout('$("#box_show p:gt(3)").remove()',500);
+	}
+	
+	function setting(thisform){
+		var username = thisform.name.value;
+		var usermail = thisform.mail.value;
+		for(var i=0;i<thisform.font_color.length;i++){
+			if(thisform.font_color[i].checked){
+				document.getElementById("box_show").style.color = thisform.font_color[i].value;
+			}
+		}
+		var usercolor = document.getElementById("box_show").style.color;
+		var userexpires = $("#option_container select option").val();
+		
+		//以下Cookie保存
+		
+		var expiresTime = new Date();
+		expiresTime.setDate(expiresTime.getDate()+userexpires);
+		document.cookie = "name="+(encodeURI(username))+";expires="+(expiresTime.toString())+";color="+(usercolor);
+		addUserName();
+	}
+	
+	$(document).ready(getCookie());
+	
+	function getCookie(){
+		if(document.cookie!=""){
+			var cookieTemp = decodeURI(document.cookie);
+			var cookieArr = cookieTemp.split(";");
+			alert(cookieArr.length);
+			for(var i = 0;i<cookieArr.length;i++){
+				cookieArr[i].split("=");
+			}
+			var name = cookieArr[0][1];
+			var expires = cookieArr[1][1];
+			var color = cookieArr[2][1];
+			$("#form_ctrl input[name='name']").val(name);
+			$("#box_show").css("color",color);
+			switch(color){
+				case "white":$("#form_ctrl input[value='white']").attr("checked","cheacked");break;
+				case "pink":$("#form_ctrl input[value='pink']").attr("checked","cheacked");break;
+				case "#CCCCCC":$("#form_ctrl input[value='#CCCCCC']").attr("checked","cheacked");break;
+			}
+		}
+			
+	}
+	
+	function addUserName(){
+	}
+	
+</script>
+</body>
+</html>

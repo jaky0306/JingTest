@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<style type="text/css" >
+	#box_container{
+		background-color:#1E88C1;
+		width:230px !important;
+
+		color: #FFF;
+		font-size:15px;
+		font-weight:bold;
+		border: thin dotted #FF99CC ;
+		font-family: Tahoma, Geneva, sans-serif;
+		border-radius:7px 7px 7px 7px;
+	}
+	#box_show,#box_ctrl,#box_tips{
+		margin:5px 5px 5px 5px;
+		text-align:center;
+		border-radius: 3px 3px 3px 3px;
+	}
+	#box_tips{
+		border:medium  dashed #fff;	
+		padding-left:3px;
+		padding-right:3px;
+		background-color:#47C9E9;
+		
+	}
+	#box_show{
+		padding:5px;
+		background-color: #47C9E9;
+		overflow:auto;
+		font-weight:600;
+		/*height:430px;*/
+		padding-bottom: 25px;
+
+	}
+	#box_ctrl{
+		background-color:#CCC;
+		padding-top:5px;
+		padding-bottom:5px;
+		line-height:2;
+	}
+	.img_ctrl{
+		position:relative;
+		left:-60px;
+		top:10px;
+	}
+	.setf{
+		color: #333;
+		font-family:"Times New Roman", Times, serif;
+		font-size:16px;
+		position:relative;
+		left:-55px;
+		top:5px;
+	}
+	.img_ctrl_user{
+		position:relative;
+		right:-50px;
+		top:10px;
+	}
+	.setf_user{
+		color: #333;
+		font-family:"Times New Roman", Times, serif;
+		font-size:16px;
+		position:relative;
+		right:-55px;
+		top:5px;
+	}
+	.msg_time{
+		font-size:10px;
+		font-family:Verdana, Geneva, sans-serif;		
+	}
+	#box_show p{
+		padding-right:5px;
+	}
+	#box_show p.message{
+		padding-right:0px;
+		padding: 3px 3px 5px 3px;
+		margin: 1px 15px 1px 15px;
+		background-color: #0D74B9;
+		border-radius:10px 10px 10px 10px;
+		
+		
+	}
+</style>
+</head>
+
+<body>
+<div id="box_container">
+
+<div id="box_tips">
+<p>This is a new showpad where you can write your minds down so that you can talk with me .</p>
+</div>
+
+<div id="box_show">
+<p><img src="1.png" class="img_ctrl" /><span class="setf">Says :  </span></p>
+<p class="message">hello,welcome to my page <span class="msg_time"> @4/1/13 17:00</span></p>
+<p><img src="1.png" class="img_ctrl" /><span class="setf">Says : </span></p>
+<p class="message" >Now,you can talk with me here <span class="msg_time"> @4/1/13 17:05</span></p>
+</div>
+
+<div id="box_ctrl">
+<form>
+<input type="text" value="Write your minds down here" id="input_msg"/><br />
+<input type="button" value="Submit" id="submit_msg" onclick="submitMsg()"  />
+<input type="button" value="Option" id="set_option" onclick="setOption()"  />
+</form>
+</div>
+
+</div><!--box_container end-->
+
+<div id="option_container" style="display: none">
+<form id="form_ctrl" onsubmit="return optionCtrl(this.form)">
+<table id="table_ctrl">
+<tr><td>Name :</td><td><input type="text" name="oem_name" /></td></tr>
+<tr><td>From :</td><td><input type="text" name="oem_from"/></td></tr>
+<tr><td>Font Color : </td>
+<td>Pink<input type="radio" value="pink" name="font_color"/> Green<input type="radio" value="green" name="font_color"/> Blue<input type="radio" value="blue" name="font_color"/> </td></tr>
+<tr><td>Avatar :</td><td><input type="file"/></td></tr>
+<tr><td colspan="2" ><input type="button" onclick="submitOption()" value="Setting" /></td></tr>
+</table>
+</form>
+</div><!--option_container end-->
+
+
+<script type="text/javascript">
+
+	document.getElementById("input_msg").onfocus = cleanDefaultTxt;
+	var boxNamespace = {};
+	boxNamespace.fragment = document.createDocumentFragment();
+	boxNamespace.firstTime = 0; //用于初始化判断
+	boxNamespace.trigger = 1;
+
+	function submitMsg(){
+		var userMsg = document.getElementById("input_msg").value;
+		var reg = /^\s*$/g;
+		if(userMsg==""||(bool=(reg.test(userMsg)))){
+			return alert("Please don't be void !");
+		}
+		if(boxNamespace.firstTime==0){
+			return alert("Please write your owe words down !");
+		}
+		
+		var cheakOverflow = function(){
+			var reg = /(\w){21,}/g;
+			if(reg.test(userMsg)){
+			//userMsg.replace(reg,"a");
+			//	alert("s1");
+			//	userMsg.split("");
+			//	alert(userMsg);	
+			//	var temp = userMsg.splice(19,0," ");
+			//	alert("s");
+			//	userMsg.join("").toString();	
+			}
+		}
+		cheakOverflow();
+		
+		var newMsg = document.createElement("p");
+		newMsg.innerHTML = userMsg;
+		//var userMsgNode = document.createTextNode(userMsg);
+		//newMsg.appendChild(userMsgNode);
+		newMsg.className = "message";
+		//留言细节
+		var msgTime = document.createElement("span");
+		msgTime.className = "msg_time";
+		msgTime.innerHTML = getMsgTime();
+		//var msgTimeTxt= getMsgTime();
+		//var msgTimeNode = document.createTextNode(msgTimeTxt);
+		//msgTime.appendChild(msgTimeNode);
+		newMsg.appendChild(msgTime);
+		//时间细节
+		addToHTML(newMsg);
+		cleanDefaultTxt("finished");
+	}
+
+	function addToHTML(obj){
+		var newImg = document.createElement("img");
+		newImg.className = "img_ctrl_user";
+		newImg.src = "2.png";
+		//头像细节
+		var newSpan = document.createElement("span");
+		newSpan.className = "setf_user";
+		newSpan.innerHTML = "Says :";
+		//介绍细节
+		var litBox = document.createElement("p");//包括头像和介绍
+		litBox.appendChild(newImg);
+		litBox.appendChild(newSpan);
+		//封装细节
+		var box_show = document.getElementById("box_show");
+		boxNamespace.fragment.appendChild(litBox);
+		boxNamespace.fragment.appendChild(obj);
+		box_show.appendChild(boxNamespace.fragment);
+		//box_show.appendChild(litBox);
+		//box_show.appendChild(obj);
+		//添加到网页
+	}
+	
+	function getMsgTime(){  
+		var time = new Date();
+		return time.showTime();
+	}
+	
+	Date.prototype.showTime= function(){	//时间显示处理函数
+		with(this){
+			var aTime={
+				 date:getDate(),
+				 month: getMonth(),
+				 year : function(){
+					 var temp="";
+					 temp+=getFullYear();
+					 temp=temp.substring(2);
+					 return temp;
+				 },
+				 minutes: function(){
+					var temp=""
+					temp=getMinutes();
+					if(temp<10) temp="0"+temp;
+					return temp;
+				 },
+				 hours: getHours()
+			}
+		}
+		var currTime = (aTime.month+1)+"/"+
+		aTime.date+"/"+aTime.year()+" "+aTime.hours+":"+aTime.minutes();
+		return " @"+currTime;	
+	}
+
+	function cleanDefaultTxt(method){
+		var defaultTxt = "Write your minds down here";
+		boxNamespace.firstTime++;
+		if(boxNamespace.firstTime==1&&document.getElementById("input_msg").value==defaultTxt){
+			document.getElementById("input_msg").value ="";
+		}
+		if(method=="finished"){
+			document.getElementById("input_msg").value ="";
+		}
+	}
+	
+	function setOption(){
+		boxNamespace.trigger++;
+		if(boxNamespace.trigger%2==0){
+			document.getElementById("option_container").style.display = "";
+		}
+		else document.getElementById("option_container").style.display = "none";
+		
+	}
+</script>
+</body>
+</html>
